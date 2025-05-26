@@ -19,7 +19,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
+    // "erasableSyntaxOnly": true, // 알 수 없는 컴파일러 옵션이므로 주석 처리했습니다.
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
