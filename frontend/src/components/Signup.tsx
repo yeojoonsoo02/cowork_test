@@ -4,6 +4,7 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [message, setMessage] = useState(""); // ✅ 메시지 상태 추가
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -13,19 +14,16 @@ const Signup: React.FC = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-      }),
+      body: JSON.stringify({ name, email, password }),
     })
       .then((res) => res.text())
       .then((data) => {
         console.log("회원가입 결과:", data);
-        // alert(data); // 성공 메시지 보여주고 싶으면
+        setMessage(`${name}님, 회원가입이 성공했습니다!`); // ✅ 메시지 설정
       })
       .catch((err) => {
         console.error("회원가입 실패:", err);
+        setMessage("회원가입 중 오류가 발생했습니다."); // 실패 메시지도 추가
       });
   };
 
@@ -107,6 +105,18 @@ const Signup: React.FC = () => {
         }}>
           회원가입
         </button>
+
+        {/* ✅ 회원가입 결과 메시지 출력 */}
+        {message && (
+          <div style={{
+            marginTop: "8px",
+            color: "#2c7a00",
+            fontWeight: 500,
+            textAlign: "center"
+          }}>
+            {message}
+          </div>
+        )}
       </form>
     </div>
   );

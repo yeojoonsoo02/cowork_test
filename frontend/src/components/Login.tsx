@@ -3,6 +3,7 @@ import React, { FormEvent, useState } from "react";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(""); // ✅ 메시지 상태 추가
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -14,13 +15,20 @@ const Login: React.FC = () => {
       },
       body: JSON.stringify({ email, password }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("로그인 실패");
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log("로그인 성공! 토큰:", data.token);
-        // localStorage.setItem("token", data.token); // 원하면 저장도 가능
+        // localStorage.setItem("token", data.token);
+        setMessage("로그인 성공했습니다!"); // ✅ 성공 메시지
       })
       .catch((err) => {
         console.error("로그인 실패:", err);
+        setMessage("이메일 또는 비밀번호가 올바르지 않습니다."); // ✅ 실패 메시지
       });
   };
 
@@ -88,6 +96,18 @@ const Login: React.FC = () => {
         }}>
           로그인
         </button>
+
+        {/* ✅ 메시지 출력 */}
+        {message && (
+          <div style={{
+            marginTop: "8px",
+            color: message.includes("성공") ? "#2c7a00" : "#d32f2f",
+            fontWeight: 500,
+            textAlign: "center"
+          }}>
+            {message}
+          </div>
+        )}
       </form>
     </div>
   );
