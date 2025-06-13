@@ -18,7 +18,7 @@ const Signup: React.FC = () => {
         const text = await res.text();
         if (res.ok) {
           setMessage(`${name}님, 회원가입이 성공했습니다!`);
-        } else if (res.status === 409) {
+        } else if (res.status === 400) {
           // 이메일 중복일 때 서버가 409를 반환한다고 가정
           setMessage("이미 존재하는 이메일입니다.");
         } else {
