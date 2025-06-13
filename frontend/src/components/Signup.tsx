@@ -4,26 +4,30 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [message, setMessage] = useState(""); // ✅ 메시지 상태 추가
+  const [message, setMessage] = useState(""); // ✅ 메시지 상태
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     fetch("http://localhost:8080/api/auth/signup", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password, createdAt: new Date() }),
     })
-      .then((res) => res.text())
-      .then((data) => {
-        console.log("회원가입 결과:", data);
-        setMessage(`${name}님, 회원가입이 성공했습니다!`); // ✅ 메시지 설정
+      .then(async (res) => {
+        const text = await res.text();
+        if (res.ok) {
+          setMessage(`${name}님, 회원가입이 성공했습니다!`);
+        } else if (res.status === 409) {
+          // 이메일 중복일 때 서버가 409를 반환한다고 가정
+          setMessage("이미 존재하는 이메일입니다.");
+        } else {
+          setMessage("회원가입 중 오류가 발생했습니다.");
+        }
       })
       .catch((err) => {
         console.error("회원가입 실패:", err);
-        setMessage("회원가입 중 오류가 발생했습니다."); // 실패 메시지도 추가
+        setMessage("회원가입 중 오류가 발생했습니다.");
       });
   };
 
@@ -106,11 +110,11 @@ const Signup: React.FC = () => {
           회원가입
         </button>
 
-        {/* ✅ 회원가입 결과 메시지 출력 */}
+        {/* ✅ 회원가입 결과 메시지 */}
         {message && (
           <div style={{
             marginTop: "8px",
-            color: "#2c7a00",
+            color: message.includes("성공") ? "#2c7a00" : "#c00",
             fontWeight: 500,
             textAlign: "center"
           }}>
