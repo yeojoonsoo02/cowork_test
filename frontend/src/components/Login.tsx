@@ -1,10 +1,29 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, useState } from "react";
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // TODO: 로그인 처리
+
+    fetch("http://localhost:8080/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("로그인 성공! 토큰:", data.token);
+        // localStorage.setItem("token", data.token); // 원하면 저장도 가능
+      })
+      .catch((err) => {
+        console.error("로그인 실패:", err);
+      });
   };
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -33,6 +52,8 @@ const Login: React.FC = () => {
         <input
           type="text"
           placeholder="이메일"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{
             padding: "12px",
             borderRadius: "8px",
@@ -44,6 +65,8 @@ const Login: React.FC = () => {
         <input
           type="password"
           placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           style={{
             padding: "12px",
             borderRadius: "8px",
@@ -70,4 +93,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default Login;

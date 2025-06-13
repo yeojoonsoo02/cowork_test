@@ -1,10 +1,34 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, useState } from "react";
 
 const Signup: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // TODO: 회원가입 처리
+
+    fetch("http://localhost:8080/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    })
+      .then((res) => res.text())
+      .then((data) => {
+        console.log("회원가입 결과:", data);
+        // alert(data); // 성공 메시지 보여주고 싶으면
+      })
+      .catch((err) => {
+        console.error("회원가입 실패:", err);
+      });
   };
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -30,9 +54,12 @@ const Signup: React.FC = () => {
           fontSize: "1.7rem",
           color: "#222"
         }}>회원가입</h2>
+
         <input
           type="text"
           placeholder="이메일"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{
             padding: "12px",
             borderRadius: "8px",
@@ -44,6 +71,8 @@ const Signup: React.FC = () => {
         <input
           type="password"
           placeholder="비밀번호"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           style={{
             padding: "12px",
             borderRadius: "8px",
@@ -55,6 +84,8 @@ const Signup: React.FC = () => {
         <input
           type="text"
           placeholder="닉네임"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           style={{
             padding: "12px",
             borderRadius: "8px",
