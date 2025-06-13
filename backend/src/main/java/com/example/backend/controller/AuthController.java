@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.LoginRequestDto;
+import com.example.backend.dto.TokenResponseDto;
 import com.example.backend.dto.SignupRequestDto;
 import com.example.backend.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +14,16 @@ public class AuthController {
 	
 	@Autowired
     private AuthService authService;
+	
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity<TokenResponseDto> login(@RequestBody LoginRequestDto requestDto) {
         String token = authService.login(requestDto);
 
         if (token != null) {
-            return ResponseEntity.ok("로그인 성공! 토큰: " + token);
-            // 또는 JSON 형식으로 주고 싶으면:
-            // return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
+        	return ResponseEntity.ok(new TokenResponseDto(token));
         } else {
-            return ResponseEntity.status(401).body("이메일 또는 비밀번호가 올바르지 않습니다.");
+        	return ResponseEntity.status(401).body(null); // 또는 ResponseEntity.of(Optional.empty())
         }
     }
     

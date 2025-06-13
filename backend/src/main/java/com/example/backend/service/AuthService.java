@@ -24,22 +24,22 @@ public class AuthService {
     
     // 로그인 로직
     public String login(LoginRequestDto request) {
-    	if (request == null || request.getEmail() == null || request.getPassword() == null) {
+        if (request == null || request.getEmail() == null || request.getPassword() == null) {
             return null;
         }
-    	
+
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            
             if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-                // 토큰 생성 후 반환
-                return jwtUtil.createToken(user.getEmail());
+                return jwtUtil.createToken(user.getEmail()); // 로그인 성공 시 토큰 반환
             }
         }
-        return null;
+
+        return null; // 로그인 실패
     }
+
     // 회원가입 로직
     public boolean signup(SignupRequestDto requestDto) {
         // 이이메일 중복 체크
